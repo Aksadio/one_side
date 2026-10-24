@@ -159,6 +159,10 @@ export function saveMemoryState(state: MemoryState): { ok: boolean; error?: stri
 }
 
 export function loadPreferences(): ExperiencePreferences {
+  return { ...loadPreferencesRaw(), reducedMotion: true };
+}
+
+function loadPreferencesRaw(): ExperiencePreferences {
   const prefersReduced =
     typeof window !== 'undefined' &&
     window.matchMedia &&
