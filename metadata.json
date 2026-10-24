@@ -1,0 +1,6 @@
+{
+  "name": "The Window — 20 Meters Apart",
+  "description": "A personal interactive memory experience by AKSAD: a fifth-floor study room, dense residential rooftops, and an unspoken distance of 20 meters.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

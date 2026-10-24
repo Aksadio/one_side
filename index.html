@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Prevent browser extensions (e.g., request interceptors) from crashing when
+      // window.fetch is defined as a getter-only property by the host environment.
+      (function () {
+        try {
+          var desc =
+            Object.getOwnPropertyDescriptor(window, 'fetch') ||
+            Object.getOwnPropertyDescriptor(Object.getPrototypeOf(window) || {}, 'fetch');
+          if (desc && desc.get && !desc.set && desc.configurable !== false) {
+            var currentFetch = window.fetch.bind(window);
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: true,
+              get: function () {
+                return currentFetch;
+              },
+              set: function (nextFetch) {
+                if (typeof nextFetch === 'function') {
+                  currentFetch = nextFetch;
+                }
+              },
+            });
+          }
+        } catch (_) {}
+
+        window.addEventListener(
+          'error',
+          function (event) {
+            var filename = event && event.filename ? String(event.filename) : '';
+            var message = event && event.message ? String(event.message) : '';
+            if (
+              filename.indexOf('chrome-extension://') === 0 ||
+              message.indexOf('Cannot set property fetch of #<Window>') !== -1
+            ) {
+              event.stopImmediatePropagation();
+              event.preventDefault();
+            }
+          },
+          true
+        );
+      })();
+    </script>
+    <title>THE WINDOW — 20 Meters Apart | A Personal Memory Experience by AKSAD</title>
+    <meta name="description" content="Somewhere between these rooftops, a window became a memory. A personal interactive memory experience by AKSAD." />
+    <meta property="og:title" content="THE WINDOW — 20 Meters Apart" />
+    <meta property="og:description" content="Somewhere between these rooftops, a window became a memory. A personal interactive memory experience by AKSAD." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-[#0b0e13] text-[#e6e8ec] antialiased selection:bg-[#d99b4e]/25 selection:text-[#f5ebd8] overflow-x-hidden">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
