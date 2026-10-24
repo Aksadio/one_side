@@ -50,7 +50,8 @@ class AmbientAudioController {
    */
   public autoStartSong(): void {
     if (typeof window === 'undefined') return;
-    const events = ['pointerdown', 'keydown', 'touchstart'];
+    // iPhone/Android browsers only allow sound after a finished tap (touchend / click)
+    const events = ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click', 'keydown'];
     const cleanup = () => events.forEach((e) => window.removeEventListener(e, tryPlay));
     const tryPlay = () => {
       if (this.userStopped) {
