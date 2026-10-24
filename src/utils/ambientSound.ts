@@ -5,6 +5,19 @@
  * Strictly disabled by default and requires explicit user interaction.
  */
 
+/**
+ * Playlist: every .mp3 placed in src/music is picked up automatically and
+ * played one after another (alphabetical order: song1.mp3, song2.mp3, ...).
+ */
+const SONG_FILES = import.meta.glob('../music/*.mp3', {
+  query: '?url',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+const PLAYLIST: string[] = Object.keys(SONG_FILES)
+  .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+  .map((key) => SONG_FILES[key]);
+
 class AmbientAudioController {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
@@ -14,11 +27,18 @@ class AmbientAudioController {
   private song: HTMLAudioElement | null = null;
   private userStopped = false;
 
+  private songIndex = 0;
+
   private ensureSong(): HTMLAudioElement {
     if (!this.song) {
-      this.song = new Audio(`${import.meta.env.BASE_URL}music/song.mp3`);
-      this.song.loop = true;
+      this.song = new Audio(PLAYLIST[0] ?? '');
       this.song.volume = 0.5;
+      this.song.addEventListener('ended', () => {
+        if (!this.song || PLAYLIST.length === 0) return;
+        this.songIndex = (this.songIndex + 1) % PLAYLIST.length;
+        this.song.src = PLAYLIST[this.songIndex];
+        void this.song.play().catch(() => {});
+      });
     }
     return this.song;
   }
