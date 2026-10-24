@@ -11,6 +11,7 @@ class AmbientAudioController {
   private windGain: GainNode | null = null;
   private rainGain: GainNode | null = null;
   private isRunning = false;
+  private song: HTMLAudioElement | null = null;
 
   public isSupported(): boolean {
     if (typeof window === 'undefined') return false;
@@ -116,6 +117,13 @@ class AmbientAudioController {
         this.masterGain.gain.setTargetAtTime(0.85, this.ctx.currentTime, 0.8);
       }
 
+      if (!this.song) {
+        this.song = new Audio(`${import.meta.env.BASE_URL}music/song.mp3`);
+        this.song.loop = true;
+        this.song.volume = 0.5;
+      }
+      void this.song.play().catch(() => {});
+
       this.setRainLayer(withRain);
       this.isRunning = true;
       return { ok: true };
@@ -132,6 +140,7 @@ class AmbientAudioController {
   }
 
   public stop(): void {
+    this.song?.pause();
     if (!this.ctx || !this.masterGain) {
       this.isRunning = false;
       return;
@@ -142,6 +151,8 @@ class AmbientAudioController {
   }
 
   public dispose(): void {
+    this.song?.pause();
+    this.song = null;
     if (this.ctx) {
       void this.ctx.close();
       this.ctx = null;
