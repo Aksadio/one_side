@@ -150,7 +150,11 @@ export default function App() {
   if (!hasEntered) {
     return (
       <OpeningScene
-        onEnter={() => setHasEntered(true)}
+        onEnter={() => {
+          // The visitor's tap on "Enter" is the one gesture phones allow: start the music right here
+          if (!preferences.soundEnabled) handleToggleSound();
+          setHasEntered(true);
+        }}
         reducedMotion={preferences.reducedMotion}
       />
     );
