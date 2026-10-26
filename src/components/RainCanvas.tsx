@@ -28,13 +28,13 @@ export const RainCanvas: React.FC<RainCanvasProps> = ({ enabled, reducedMotion }
     let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
     let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
 
-    const dropCount = Math.min(55, Math.floor((width * height) / 24000));
+    const dropCount = Math.min(180, Math.max(40, Math.floor((width * height) / 8000)));
     const drops: RainDrop[] = Array.from({ length: dropCount }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
-      length: 14 + Math.random() * 20,
-      speed: 3.2 + Math.random() * 2.8,
-      opacity: 0.08 + Math.random() * 0.14,
+      length: 16 + Math.random() * 24,
+      speed: 7 + Math.random() * 5,
+      opacity: 0.12 + Math.random() * 0.2,
     }));
 
     const handleResize = () => {
@@ -77,7 +77,7 @@ export const RainCanvas: React.FC<RainCanvasProps> = ({ enabled, reducedMotion }
         ctx.stroke();
 
         d.y += d.speed;
-        d.x -= 0.28;
+        d.x -= 0.5;
 
         if (d.y > height + 20) {
           d.y = -25;
