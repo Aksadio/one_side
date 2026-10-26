@@ -94,7 +94,7 @@ export default function App() {
   };
 
   const handleToggleReducedMotion = () => {
-    setPreferences((prev) => ({ ...prev, reducedMotion: true }));
+    setPreferences((prev) => ({ ...prev, reducedMotion: !prev.reducedMotion }));
   };
 
   const handleToggleDeskLamp = () => {

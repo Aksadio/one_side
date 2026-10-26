@@ -159,8 +159,8 @@ export function saveMemoryState(state: MemoryState): { ok: boolean; error?: stri
 }
 
 export function loadPreferences(): ExperiencePreferences {
-  // Reduced Motion is always on, on every device
-  return { ...loadPreferencesRaw(), reducedMotion: true };
+  // Animations are always on at page load, on every device (Reduced Motion starts Off)
+  return { ...loadPreferencesRaw(), reducedMotion: false };
 }
 
 function loadPreferencesRaw(): ExperiencePreferences {
