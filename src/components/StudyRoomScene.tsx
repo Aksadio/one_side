@@ -21,6 +21,8 @@ export const StudyRoomScene: React.FC<StudyRoomSceneProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  // The window curtain starts closed; click it to draw it open, click again to close it
+  const [curtainOpen, setCurtainOpen] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (preferences.reducedMotion || !containerRef.current) return;
@@ -82,13 +84,15 @@ export const StudyRoomScene: React.FC<StudyRoomSceneProps> = ({
             timeOfDay={preferences.timeOfDay}
             deskLampOn={preferences.deskLampOn}
             reducedMotion={preferences.reducedMotion}
+            curtainOpen={curtainOpen}
+            onToggleCurtain={() => setCurtainOpen((open) => !open)}
           />
         </div>
 
         {/* Optional Rain on the Window Pane region */}
         <div className="pointer-events-none absolute top-[8%] left-[8%] h-[60%] w-[54%] overflow-hidden">
           <RainCanvas
-            enabled={preferences.rainEnabled}
+            enabled={preferences.rainEnabled && curtainOpen}
             reducedMotion={preferences.reducedMotion}
           />
         </div>
@@ -106,6 +110,7 @@ export const StudyRoomScene: React.FC<StudyRoomSceneProps> = ({
         />
 
         {/* Interactive Hotspot 1: The Window (Look Outside -> 20 Meters Apart) */}
+        {curtainOpen && (
         <button
           type="button"
           onClick={onFocusWindow}
@@ -117,6 +122,7 @@ export const StudyRoomScene: React.FC<StudyRoomSceneProps> = ({
             Look Out the Window
           </span>
         </button>
+        )}
 
         {/* Interactive Hotspot 2: The Clothbound Notebook (Open Personal Diary) */}
         <button
