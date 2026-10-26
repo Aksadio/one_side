@@ -6,6 +6,8 @@ interface AnimatedStudyRoomSvgProps {
   timeOfDay: TimeOfDay;
   deskLampOn: boolean;
   reducedMotion: boolean;
+  curtainOpen: boolean;
+  onToggleCurtain: () => void;
 }
 
 /**
@@ -19,6 +21,8 @@ export const AnimatedStudyRoomSvg: React.FC<AnimatedStudyRoomSvgProps> = ({
   timeOfDay,
   deskLampOn,
   reducedMotion,
+  curtainOpen,
+  onToggleCurtain,
 }) => {
   const roomColors = {
     day: {
@@ -66,10 +70,17 @@ export const AnimatedStudyRoomSvg: React.FC<AnimatedStudyRoomSvgProps> = ({
       viewBox="0 0 1600 900"
       preserveAspectRatio="xMidYMid slice"
       className="h-full w-full select-none"
-      role="img"
+      role="group"
       aria-label="Animated cartoon illustration of a modest fifth-floor study desk beside an open window overlooking dense residential rooftops, featuring stacked books, a clothbound notebook, pen, and desk lamp"
     >
       <defs>
+        {/* Repeating curtain pleats (14 folds across the curtain) */}
+        <linearGradient id="curtain-pleats" x1="0" y1="0" x2="0.0714" y2="0" spreadMethod="repeat">
+          <stop offset="0%" stopColor={roomColors.curtainShadow} />
+          <stop offset="50%" stopColor={roomColors.curtain} />
+          <stop offset="100%" stopColor={roomColors.curtainShadow} />
+        </linearGradient>
+
         {/* Clip path for the open fifth-floor window aperture */}
         <clipPath id="study-window-aperture">
           <rect x="135" y="78" width="845" height="535" rx="3" />
@@ -163,34 +174,43 @@ export const AnimatedStudyRoomSvg: React.FC<AnimatedStudyRoomSvgProps> = ({
         <polygon points="96,626 1020,626 1036,650 84,650" fill={roomColors.sill} />
       </g>
 
-      {/* Gently Swaying Fabric Window Curtain on Right Edge of Window */}
-      <g stroke={outline} strokeWidth="2.5" strokeLinejoin="round">
-        {/* Curtain rod */}
-        <rect x="85" y="38" width="955" height="9" rx="4" fill="#2c221b" />
-        <path
-          d="M 885 47 L 1012 47 L 1024 636 L 898 636 Q 872 355 885 47 Z"
-          fill={roomColors.curtain}
-        >
-          {!reducedMotion && (
-            <animate
-              attributeName="d"
-              dur="6.5s"
-              repeatCount="indefinite"
-              values="
-                M 885 47 L 1012 47 L 1024 636 L 898 636 Q 872 355 885 47 Z;
-                M 885 47 L 1012 47 L 1016 636 L 870 636 Q 848 355 885 47 Z;
-                M 885 47 L 1012 47 L 1024 636 L 898 636 Q 872 355 885 47 Z
-              "
-            />
-          )}
-        </path>
-        {/* Curtain fold line */}
-        <path
-          d="M 948 47 Q 934 345 955 636"
-          fill="none"
-          stroke={roomColors.curtainShadow}
-          strokeWidth="3"
+      {/* Window curtain: closed = covers the whole window, open = gathered at the right edge.
+          Click (or Enter / Space) on the curtain to open or close it. */}
+      <rect x="85" y="38" width="955" height="9" rx="4" fill="#2c221b" stroke={outline} strokeWidth="2.5" />
+      <g
+        role="button"
+        tabIndex={0}
+        aria-pressed={curtainOpen}
+        aria-label={curtainOpen ? 'Close the window curtain' : 'Open the window curtain'}
+        onClick={onToggleCurtain}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onToggleCurtain();
+          }
+        }}
+        className="cursor-pointer outline-none transition-[filter] duration-200 hover:brightness-110 focus-visible:brightness-125"
+        style={{
+          transformBox: 'fill-box',
+          transformOrigin: '100% 50%',
+          transform: `scaleX(${curtainOpen ? 0.14 : 1})`,
+          transition: reducedMotion ? 'none' : 'transform 1100ms cubic-bezier(0.65, 0, 0.35, 1)',
+        }}
+      >
+        <title>{curtainOpen ? 'Close the curtain' : 'Open the curtain'}</title>
+        <rect
+          x="100"
+          y="47"
+          width="912"
+          height="589"
+          fill="url(#curtain-pleats)"
+          stroke={outline}
+          strokeWidth="2.5"
+          vectorEffect="non-scaling-stroke"
+          strokeLinejoin="round"
         />
+        {/* Soft hem shadow along the bottom of the curtain */}
+        <rect x="100" y="612" width="912" height="24" fill={roomColors.curtainShadow} opacity="0.55" />
       </g>
 
       {/* 4. MODEST WOODEN STUDY DESK BESIDE THE WINDOW */}
