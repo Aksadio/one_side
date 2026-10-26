@@ -147,16 +147,38 @@ export default function App() {
     persistMemory(imported);
   };
 
+  // Floating welcome robot (bottom-right) linking to the portfolio, shown on every page
+  const portfolioRobot = (
+    <a
+      href="https://aksadio.github.io/Shahariar-Azim-Aksad/"
+      target="_blank"
+      rel="noopener noreferrer"
+      title="Visit my portfolio"
+      aria-label="Visit my portfolio"
+      className="fixed bottom-3 right-3 z-50 block h-20 w-20 transition-transform duration-200 hover:scale-110 sm:bottom-5 sm:right-5 sm:h-24 sm:w-24"
+    >
+      <img
+        src={`${import.meta.env.BASE_URL}welcome.gif`}
+        alt="Welcome robot — click to visit my portfolio"
+        className="h-full w-full select-none object-contain"
+        draggable={false}
+      />
+    </a>
+  );
+
   if (!hasEntered) {
     return (
-      <OpeningScene
-        onEnter={() => {
-          // The visitor's tap on "Enter" is the one gesture phones allow: start the music right here
-          if (!preferences.soundEnabled) handleToggleSound();
-          setHasEntered(true);
-        }}
-        reducedMotion={preferences.reducedMotion}
-      />
+      <>
+        <OpeningScene
+          onEnter={() => {
+            // The visitor's tap on "Enter" is the one gesture phones allow: start the music right here
+            if (!preferences.soundEnabled) handleToggleSound();
+            setHasEntered(true);
+          }}
+          reducedMotion={preferences.reducedMotion}
+        />
+        {portfolioRobot}
+      </>
     );
   }
 
@@ -540,22 +562,7 @@ export default function App() {
         memoryState={memoryState}
       />
 
-      {/* Floating welcome robot (bottom-right) linking to the portfolio */}
-      <a
-        href="https://aksadio.github.io/Shahariar-Azim-Aksad/"
-        target="_blank"
-        rel="noopener noreferrer"
-        title="Visit my portfolio"
-        aria-label="Visit my portfolio"
-        className="fixed bottom-3 right-3 z-50 block h-20 w-20 transition-transform duration-200 hover:scale-110 sm:bottom-5 sm:right-5 sm:h-24 sm:w-24"
-      >
-        <img
-          src={`${import.meta.env.BASE_URL}welcome.gif`}
-          alt="Welcome robot — click to visit my portfolio"
-          className="h-full w-full select-none object-contain"
-          draggable={false}
-        />
-      </a>
+      {portfolioRobot}
     </div>
   );
 }
