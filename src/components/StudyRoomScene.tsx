@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { BookOpen, Eye, LampDesk } from 'lucide-react';
+import { BookOpen, Eye, Hand, LampDesk } from 'lucide-react';
 import { ExperiencePreferences } from '../types';
 import { RainCanvas } from './RainCanvas';
 import { AnimatedStudyRoomSvg } from './AnimatedStudyRoomSvg';
@@ -108,6 +108,26 @@ export const StudyRoomScene: React.FC<StudyRoomSceneProps> = ({
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#080b10]/80 via-transparent to-[#080b10]/20"
         />
+
+        {/* Hint button on the curtain: sits in the middle of the closed curtain and slides
+            to the right with it (the curtain gathers at the right edge) when opened. */}
+        <button
+          type="button"
+          onClick={() => setCurtainOpen((open) => !open)}
+          aria-label={curtainOpen ? 'Close the window curtain' : 'Open the window curtain'}
+          className="group absolute top-[38%] z-30 flex min-h-[44px] -translate-x-1/2 items-center gap-2.5 rounded border border-[#e6e8ec]/25 bg-[#0b0f17]/80 px-4 py-2.5 text-left backdrop-blur-md hover:border-[#d99b4e]/80 hover:bg-[#121824]/95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d99b4e] cursor-pointer whitespace-nowrap shrink-0"
+          style={{
+            left: curtainOpen ? '59%' : '35%',
+            transition: preferences.reducedMotion
+              ? 'none'
+              : 'left 1100ms cubic-bezier(0.65, 0, 0.35, 1), border-color 200ms, background-color 200ms',
+          }}
+        >
+          <Hand className="h-4 w-4 text-[#d99b4e] transition-transform duration-200 group-hover:scale-110 shrink-0" />
+          <span className="font-sans text-xs font-medium tracking-wider text-[#f0f2f5] uppercase">
+            Touch the Window
+          </span>
+        </button>
 
         {/* Interactive Hotspot 1: The Window (Look Outside -> 20 Meters Apart) */}
         {curtainOpen && (
